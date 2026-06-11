@@ -4,6 +4,12 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import "./index.css";
 
+declare global {
+  interface Window {
+    pendo: any;
+  }
+}
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
@@ -11,3 +17,12 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     </BrowserRouter>
   </React.StrictMode>
 );
+
+window.pendo?.initialize({
+  visitor: {
+    id: "anonymous",
+  },
+  account: {
+    id: "trustlens-ai",
+  },
+});
