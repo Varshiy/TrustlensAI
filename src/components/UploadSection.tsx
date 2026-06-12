@@ -10,9 +10,16 @@ function UploadSection() {
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
-      setFileName(e.target.files[0].name);
+      const selectedFile = e.target.files[0];
+      setFile(selectedFile);
+      setFileName(selectedFile.name);
       setResult("");
+
+      window.pendo?.track("image_uploaded", {
+        fileName: selectedFile.name,
+        fileType: selectedFile.type,
+        fileSize: selectedFile.size,
+      });
     }
   };
 
@@ -42,12 +49,28 @@ function UploadSection() {
 
       const data = await response.json();
 
+      window.pendo?.track("image_analysis_completed", {
+        prediction: data.prediction,
+        confidence: data.confidence,
+        fileName: file.name,
+        fileType: file.type,
+        fileSize: file.size,
+      });
+
       setResult(
         `Prediction: ${data.prediction}
 Confidence: ${data.confidence}%`
       );
     } catch (error) {
       console.log(error);
+
+      window.pendo?.track("image_analysis_failed", {
+        errorMessage: error instanceof Error ? error.message : "Unknown error",
+        fileName: file.name,
+        fileType: file.type,
+        fileSize: file.size,
+      });
+
       alert("Error connecting to backend!");
     }
 
