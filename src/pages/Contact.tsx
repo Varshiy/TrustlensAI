@@ -18,10 +18,20 @@ function Contact() {
         "t9VdK2-RQvA-NJXwN"
       )
       .then(() => {
+        window.pendo?.track("contact_form_submitted", {
+          formType: "contact",
+        });
+
         setSent(true);
       })
       .catch((error) => {
         console.log(error);
+
+        window.pendo?.track("contact_form_failed", {
+          formType: "contact",
+          errorMessage: error?.text || error?.message || "Unknown error",
+        });
+
         alert("Failed to send message!");
       });
   };
