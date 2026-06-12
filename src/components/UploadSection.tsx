@@ -13,6 +13,9 @@ function UploadSection() {
       setFile(e.target.files[0]);
       setFileName(e.target.files[0].name);
       setResult("");
+      window.pendo?.track("image_file_selected", {
+        fileName: e.target.files[0].name,
+      });
     }
   };
 
@@ -46,9 +49,17 @@ function UploadSection() {
         `Prediction: ${data.prediction}
 Confidence: ${data.confidence}%`
       );
+
+      window.pendo?.track("image_analysis_completed", {
+        prediction: data.prediction,
+        confidence: data.confidence,
+      });
     } catch (error) {
       console.log(error);
       alert("Error connecting to backend!");
+      window.pendo?.track("image_analysis_failed", {
+        error: String(error),
+      });
     }
 
     setLoading(false);

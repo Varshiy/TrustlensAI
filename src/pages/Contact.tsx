@@ -19,10 +19,14 @@ function Contact() {
       )
       .then(() => {
         setSent(true);
+        window.pendo?.track("contact_form_submitted");
       })
       .catch((error) => {
         console.log(error);
         alert("Failed to send message!");
+        window.pendo?.track("contact_form_submission_failed", {
+          error: String(error),
+        });
       });
   };
 
